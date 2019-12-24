@@ -49,10 +49,18 @@ class MyForegroundService : Service() {
 
         startForeground(1, notification)
 
+        // CPUのWakeLockを確保
+        val wakeLock = (getSystemService(Context.POWER_SERVICE) as PowerManager)
+            .newWakeLock(PowerManager.PARTIAL_WAKE_LOCK,
+                "myapp:cpuwakelock")
+        wakeLock.acquire()
+        cpuWakeLock = wakeLock
+
         return START_STICKY
     }
 
     private var _counter: Int = 0
+    private var cpuWakeLock: PowerManager.WakeLock? = null
 
     private fun Action() {
         //スリープから復帰
